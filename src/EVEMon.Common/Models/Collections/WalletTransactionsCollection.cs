@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using EVEMon.Common.Collections;
+using EVEMon.Common.Enumerations.CCPAPI;
 using EVEMon.Common.Serialization.Eve;
+using EVEMon.Common.Service;
 
 namespace EVEMon.Common.Models.Collections
 {
@@ -30,6 +32,36 @@ namespace EVEMon.Common.Models.Collections
             {
                 Items.Add(new WalletTransaction(srcWalletTransaction, m_character));
             }
+        }
+
+        /// <summary>
+        /// Imports the WalletTransactions from a cached file.
+        /// </summary>
+        internal void ImportFromCacheFile()
+        {
+            var result = LocalXmlCache.Load<SerializableAPIWalletTransactions>(m_character.Name + "-" +
+                ESIAPICharacterMethods.WalletTransactions);
+            if (result != null)
+                Import(result.WalletTransactions);
+        }
+
+        /// <summary>
+        /// Exports the WalletTransactions to the cached file.
+        /// </summary>
+        internal void ExportToCacheFile()
+        {
+            // Save the file to the cache
+            string filename = m_character.Name + "-" + ESIAPICharacterMethods.WalletTransactions;
+            var exported = new SerializableAPIWalletTransactions();
+
+            foreach (WalletTransaction tx in Items)
+                exported.WalletTransactions.Add(tx.Export());
+
+            LocalXmlCache.SaveAsync(filename, Util.SerializeToXmlDocument(exported)).
+                ConfigureAwait(false);
+
+            // TODO Fire event to update the UI ?
+            // EveMonClient.OnCharacterKillLogUpdated(m_ccpCharacter);
         }
     }
 }

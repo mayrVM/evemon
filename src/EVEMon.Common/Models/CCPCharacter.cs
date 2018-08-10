@@ -357,6 +357,10 @@ namespace EVEMon.Common.Models
             // Eve notifications IDs
             serial.EveNotificationsIDs = EVENotifications.Export();
 
+            // WalletTransactions to XML
+            WalletTransactions.ExportToCacheFile();
+            serial.LastWalletTransactionTime = WalletTransactions.Count == 0 ? DateTime.MinValue : WalletTransactions.Max(wt => wt.Date);
+
             // Last API updates
             if (QueryMonitors.Any())
             {
@@ -469,6 +473,9 @@ namespace EVEMon.Common.Models
 
             // Kill Logs
             KillLog.ImportFromCacheFile();
+
+            // Wallet Transactions
+            WalletTransactions.ImportFromCacheFile();
 
             // Fire the global event
             EveMonClient.OnCharacterUpdated(this);

@@ -121,6 +121,24 @@ namespace EVEMon.Common.Models
 
         #region Helper Methods
 
+        public SerializableWalletTransactionsListItem Export()
+        {
+            var export = new SerializableWalletTransactionsListItem();
+            export.ID = this.ID;
+            export.JournalTransactionID= this.JournalID;
+            export.TransactionDate= this.Date;
+            export.TypeName= this.ItemName;
+            export.Quantity = this.Quantity;
+            export.Price = this.Price;
+            export.ClientID= this.m_clientID;
+
+            export.TransactionType = this.TransactionType == TransactionType.Buy ? "buy" : "sell";
+            export.TransactionFor = this.TransactionFor == IssuedFor.Character? "personal" : "corporate";
+            export.StationID = this.m_stationID;
+
+            return export;
+        }
+
         private decimal GetCredit()
         {
 

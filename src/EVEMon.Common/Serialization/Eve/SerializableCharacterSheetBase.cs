@@ -197,6 +197,17 @@ namespace EVEMon.Common.Serialization.Eve
         [XmlArrayItem("skill")]
         public Collection<SerializableCharacterSkill> Skills => m_skills;
 
+        [XmlElement("LastWalletTransaction")]
+        public string LastWalletTransactionTimeXml
+        {
+            get { return LastWalletTransactionTime.DateTimeToTimeString(); }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    LastWalletTransactionTime = value.TimeStringToDateTime();
+            }
+        }
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
@@ -262,5 +273,12 @@ namespace EVEMon.Common.Serialization.Eve
         /// </summary>
         [XmlIgnore]
         public DateTime JumpLastUpdateDate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time of the latest known wallet transaction
+        /// </summary>
+        [XmlIgnore]
+        public DateTime LastWalletTransactionTime { get; set; }
+        
     }
 }
